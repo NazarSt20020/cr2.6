@@ -1,0 +1,61 @@
+using System;
+using static System.Console;
+// Необхідно для використання можливостей класу Stream
+using System.IO;
+// Необхідно для використання класу BinaryFormatter
+using System.Runtime.Serialization.Formatters.Binary;
+namespace ConsoleApp1
+{
+    // Вихідний клас B, який містить одне поле та один метод
+    // Перед класом вказується, що клас буде зберігатись в пам&#39;яті
+    // (клас, який серіалізується)
+    [Serializable]
+    class B
+    {
+        public double x;
+        void ShowX()
+        {
+
+            WriteLine(" x = { 0}", x);
+        }
+    }
+    // Клас A, який містить метод,
+    // що визначає розмір екземпляру класу B
+    class A
+    {
+        // У методі створюється екземпляр класу B,
+        // та визначається його розмір
+        public void DemoSizeObjB()
+        {
+            // 1. Оголосити внутрішні змінні
+            long size = 0; // розмір екземпляру класу B
+            B objB = new B(); // створити екземпляр
+                              // 2. Використання потоку в пам&#39;яті у двійковому вигляді
+                              // 2.1. Створити потік в пам&#39;яті
+            using (Stream s = new MemoryStream())
+            {
+                // 2.2. Створити екземпляр бінарного (двійкового)
+                //      формату серіалізації
+                BinaryFormatter bf = new BinaryFormatter();
+                // 2.3. Записати екземпляр objB у двійковому форматі
+                //      в пам&#39;ять
+                bf.Serialize(s, objB);
+                // 2.4. Визначити розмір пам&#39;яті,
+                //       в який був записаний екземпляр
+                size = s.Length;
+                // 2.5. Вивести розмір на екран
+                WriteLine(" size = { 0}", size);
+            }
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // 1. Створити екземпляр класу A
+            A objA = new A();
+            // 2. Викликати метод DemoSizeObjB()
+            objA.DemoSizeObjB();
+        }
+    }
+}
